@@ -1,0 +1,28 @@
+- add numeric algorithms
+  - long arithmetic
+  - fast multiplication
+  - fast fourier transform
+    - in complex field
+    - in arbitrary field
+- add graph algorithms
+  - shortest path
+  - minimal spanning tree
+  - breadth first search
+  - depth first search
+  - maximum flow
+  - min cost max flow
+  - lowest common ancestor
+- geometrical algorithm
+  - geometry primitives and it's intersection
+  - convex hull
+- string algorithms
+  - suffix arrays
+  - suffix trees
+  - trie
+- add data structures
+  + range tree
+  + range tree with lazy propagation
+  - disjoint set union
+- stochastic algorihtms
+  - simulated annealing
+  - genetic algorithms
