@@ -6,19 +6,19 @@
 template<class UpdateType, class ResType,
   class UpdateNodePred, 
   class MergeResPred, 
-  class MergeNodeToResPred,
-  UpdateType defUpdate = UpdateType(), 
-  ResType defRes = ResType()>
+  class NodeToResPred>
 class RangeTree {
 public:
-  RangeTree( int size ) 
+  RangeTree( int size, const UpdateType& _defUpdate, const ResType& _defRes ) 
   {
+    defUpdate = _defUpdate;
+    defRes = _defRes;
     int realSize = _findTreeArraySize(size);
     tree.resize(realSize, defUpdate);
   }
 
   // construct tree from array. Faster than one by one elements insertion
-  RangeTree( const vector<UpdateType>& elems );
+  RangeTree( const vector<UpdateType>& elems, const UpdateType& _defUpdate, const ResType& _defRes );
 
   // update a given element with a given value
   void update( int elem, const UpdateType& val );
@@ -26,24 +26,33 @@ public:
   // query the value of a given interval
   ResType queryRange( int first, int last );
 
+  // predicate setters. Note that using them when tree is built may cause unpredictable behaviour
+  // Make sure you understand what you're doing
+  void setNodeToResPred( const NodeToResPred& pred) { nodeToResPred = pred; }
+
 private:
   // elements of tree. Always have a node value n + 1
   vector<UpdateType> tree;
 
+  ResType defRes;
+  UpdateType defUpdate;
+
   /* predicate objects */
   UpdateNodePred updateNodePred;
   MergeResPred mergeResPred;
-  MergeNodeToResPred mergeLazyToResPred;
+  NodeToResPred nodeToResPred;
 
   int _findTreeArraySize( int elemsCount );
 };
 
 template<class UpdateType, class ResType,
   class UpdateNodePred, class MergeResPred,
-  class MergeNodeToResPred, UpdateType defUpdate, ResType defRes>
+  class NodeToResPred>
   RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
-  MergeNodeToResPred, defUpdate, defRes>::RangeTree( const vector<UpdateType>& elems )
+  NodeToResPred>::RangeTree( const vector<UpdateType>& elems, const UpdateType& _defUpdate, const ResType& _defRes )
 {
+  defRes = _defRes;
+  defUpdate = _defUpdate;
   int realSize = _findTreeArraySize( elems.size() );
   tree.resize( realSize, defUpdate );
   int leafFirstIndex = tree.size() / 2 - 1;
@@ -59,9 +68,9 @@ template<class UpdateType, class ResType,
 
 template<class UpdateType, class ResType,
   class UpdateNodePred, class MergeResPred,
-  class MergeNodeToResPred, UpdateType defUpdate, ResType defRes>
+  class NodeToResPred>
   int RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
-  MergeNodeToResPred, defUpdate, defRes>::_findTreeArraySize( int elemsCount )
+  NodeToResPred>::_findTreeArraySize( int elemsCount )
 {
   int size = 4;
   while( size < elemsCount ) {
@@ -72,9 +81,9 @@ template<class UpdateType, class ResType,
 
 template<class UpdateType, class ResType,
   class UpdateNodePred, class MergeResPred,
-  class MergeNodeToResPred, UpdateType defUpdate, ResType defRes>
+  class NodeToResPred>
   void RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
-  MergeNodeToResPred, defUpdate, defRes>::update( int elem, const UpdateType& val )
+  NodeToResPred>::update( int elem, const UpdateType& val )
 {
   // todo: assert index out of bounds
   elem += tree.size() / 2 - 1;
@@ -87,9 +96,9 @@ template<class UpdateType, class ResType,
 
 template<class NodeType, class ResType,
   class UpdateNodePred, class MergeResPred,
-  class MergeNodeToResPred, NodeType defUpdate, ResType defRes>
+  class NodeToResPred>
   ResType RangeTree<NodeType, ResType, UpdateNodePred, MergeResPred,
-  MergeNodeToResPred, defUpdate, defRes>::queryRange( int first, int last )
+  NodeToResPred>::queryRange( int first, int last )
 {
   ResType leftRes = defRes;
   ResType rightRes = defRes;
@@ -97,10 +106,10 @@ template<class NodeType, class ResType,
   last += tree.size() / 2 - 1;
   while( first <= last ) {
     if( first % 2 == 0 ) {
-      leftRes = mergeResPred( leftRes, tree[first] );
+      leftRes = mergeResPred( leftRes, nodeToResPred( tree[first] ) );
     }
     if( last % 2 == 1 ) {
-      rightRes = mergeResPred( tree[last], rightRes );
+      rightRes = mergeResPred( nodeToResPred( tree[last] ), rightRes );
     }
     first = first / 2;
     last = last / 2 - 1;

@@ -1,4 +1,12 @@
+1. Project maintenance
+- add unit test library (presumably GTest)
+- add assertions
+- add benchmarks
+- add directory structures
+- write "code inliner" utility that assemble a complete source code based on includes of source file
+2. Requested features
 - add numeric algorithms
+  - modular arithmetic
   - long arithmetic
   - fast multiplication
   - fast fourier transform
@@ -20,6 +28,7 @@
   - suffix trees
   - trie
 - add data structures
+  - merge sort inversion count
   + range tree
   + range tree with lazy propagation
   - disjoint set union
