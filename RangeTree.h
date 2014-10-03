@@ -9,6 +9,8 @@ template<class UpdateType, class ResType,
   class NodeToResPred>
 class RangeTree {
 public:
+  RangeTree() {}
+
   RangeTree( int size, const UpdateType& _defUpdate, const ResType& _defRes ) 
   {
     defUpdate = _defUpdate;
@@ -20,6 +22,7 @@ public:
   // construct tree from array. Faster than one by one elements insertion
   RangeTree( const vector<UpdateType>& elems, const UpdateType& _defUpdate, const ResType& _defRes );
 
+  void init( const vector<UpdateType>& elems, const UpdateType& _defUpdate, const ResType& _defRes );
   // update a given element with a given value
   void update( int elem, const UpdateType& val );
 
@@ -51,6 +54,27 @@ template<class UpdateType, class ResType,
   RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
   NodeToResPred>::RangeTree( const vector<UpdateType>& elems, const UpdateType& _defUpdate, const ResType& _defRes )
 {
+  init( elems, _defUpdate, _defRes );
+}
+
+template<class UpdateType, class ResType,
+  class UpdateNodePred, class MergeResPred,
+  class NodeToResPred>
+  int RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
+  NodeToResPred>::_findTreeArraySize( int elemsCount )
+{
+  int size = 4;
+  while( size < elemsCount ) {
+    size *= 2;
+  }
+  return size * 2;
+}
+
+template<class NodeType, class ResType,
+  class UpdateNodePred, class MergeResPred,
+  class NodeToResPred>
+  void RangeTree<NodeType, ResType, UpdateNodePred, MergeResPred, NodeToResPred>::init( const vector<NodeType>& elems, const NodeType& _defUpdate, const ResType& _defRes )
+{
   defRes = _defRes;
   defUpdate = _defUpdate;
   int realSize = _findTreeArraySize( elems.size() );
@@ -69,19 +93,6 @@ template<class UpdateType, class ResType,
 template<class UpdateType, class ResType,
   class UpdateNodePred, class MergeResPred,
   class NodeToResPred>
-  int RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
-  NodeToResPred>::_findTreeArraySize( int elemsCount )
-{
-  int size = 4;
-  while( size < elemsCount ) {
-    size *= 2;
-  }
-  return size * 2;
-}
-
-template<class UpdateType, class ResType,
-  class UpdateNodePred, class MergeResPred,
-  class NodeToResPred>
   void RangeTree<UpdateType, ResType, UpdateNodePred, MergeResPred,
   NodeToResPred>::update( int elem, const UpdateType& val )
 {
@@ -93,6 +104,7 @@ template<class UpdateType, class ResType,
     tree[elem] = updateNodePred( tree[elem*2+1], tree[elem*2+2] );
   }
 }
+
 
 template<class NodeType, class ResType,
   class UpdateNodePred, class MergeResPred,
@@ -116,6 +128,12 @@ template<class NodeType, class ResType,
   }
   return mergeResPred( leftRes, rightRes );
 }
+
+template<class ValueType>
+struct RangeMinTree {
+  typedef RangeTree<ValueType, ValueType, NumMinPredicate, 
+    NumMinPredicate, IdentityPredicate> type;
+};
 
 //-----------RangeTree.h----ends--------------
 //-------------------------------------------------------

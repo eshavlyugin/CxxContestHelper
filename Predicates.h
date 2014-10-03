@@ -40,6 +40,10 @@ struct IdentityPredicate {
   {
     return res;
   }
+  template<class ValueType>
+  ValueType operator()( const ValueType& res ) {
+    return res;
+  }
 };
 
 struct RangeSumPredicate {

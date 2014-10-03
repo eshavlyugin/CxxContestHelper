@@ -49,15 +49,15 @@ class LcaFinder {
   void _traverse( int v, int prev, int depth, const DiGraph& graph,
 		  vector<LcaTreeNode>& nodes, vector<int>& minIdx )
   {
-    nodes.push_back( LcaTreeNode( v, depth ) );
     minIdx[v] = nodes.size();
+    nodes.push_back( LcaTreeNode( v, depth ) );
     vector<Edge> edges = graph.getEdgesForVertex(v);
     for( int i = 0; i < edges.size(); i++ ) {
       if( edges[i].v2 == prev ) {
 	continue;
       }
       _traverse( edges[i].v2, v, depth + 1, graph, nodes, minIdx );
-      nodes.push_back( LcaTreeNode( v, depth + 1 ) );
+      nodes.push_back( LcaTreeNode( v, depth ) );
     }
   }
 };
