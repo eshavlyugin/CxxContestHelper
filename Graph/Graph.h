@@ -1,3 +1,5 @@
+#pragma once
+
 //-------------------------------------------------
 //-------------------------------------------------
 
@@ -10,10 +12,11 @@ struct Edge {
   Edge( int _v1, int _v2, int _w ) : v1(_v1), v2(_v2), w(_w) {}
 };
 
-class DiGraph {
+class Graph {
  public:
-  DiGraph( int vCount ) {
+  Graph( int vCount ) {
     edges.resize( vCount );
+    removed.resize( vCount );
   }
 
   int vCount() const { 
@@ -28,11 +31,31 @@ class DiGraph {
     edges[invE.v1].push_back( invE );
   }
 
+  void removeVertex( int v ) 
+  {
+    removed[v] = true;
+  }
+
   vector<Edge> getEdgesForVertex( int v ) const
     {
-      return edges[v];
+      vector<Edge> result;
+      if( removed[v] ) {
+	return result;
+      }
+      result = edges[v];
+      int curPt = 0;
+      for( int i = 0; i < result.size(); i++ ) {
+	if( !removed[result[i].v1] && !removed[result[i].v2] ) {
+	  result[curPt++] = result[i];
+	}
+      }
+      result.resize( curPt );
+      return result;
     }
 
  private:
   vector< vector<Edge> > edges;
+  vector<bool> removed;
 };
+
+//----------------------------------------------------------------

@@ -1,5 +1,5 @@
-#include "Predicates.h"
-
+#pragma once
+ 
 //-----------RangeTree.h----begins------
 //-------------------------------------------------
 

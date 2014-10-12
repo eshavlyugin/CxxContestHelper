@@ -19,15 +19,17 @@
   - depth first search
   - maximum flow
   - min cost max flow
-  + lowest common ancestor
+  - tree algorithms
+    + lowest common ancestor
+    + tree centroid algorithms including centroid decomposition
 - geometrical algorithm
   - geometry primitives and it's intersection
   - convex hull
 - string algorithms
-  - suffix arrays
+  + suffix arrays
   - suffix trees
   - trie
-  - substring hash function
+  + substring hash function
 - add data structures
   - merge sort inversion count
   + range tree
