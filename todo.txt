@@ -34,6 +34,9 @@
   - merge sort inversion count
   + range tree
   + range tree with lazy propagation
+  + cartesian tree and related problems
+    + order statistics tree
+    - extracting and adding continious subranges of values
   - disjoint set union
 - stochastic algorihtms
   - simulated annealing
